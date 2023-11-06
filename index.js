@@ -43,8 +43,12 @@ app.get('/', (request, response) => {
 
 app.get('/info', (request, response) => {
     let date = new Date().toUTCString()
-    response.send(`Phonebook has infor for ${persons.length} people</br> \
-        and the time is ${date}`)
+
+    Person.find({}).then(persons => {
+      response.send(`Phonebook has infor for ${persons.length} people</br> \
+          and the time is ${date}`)
+    })
+      
 })
 
 app.get('/api/persons', (request, response) => {
@@ -92,6 +96,21 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
       response.json(savedPerson)
     })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
