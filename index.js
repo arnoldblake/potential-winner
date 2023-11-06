@@ -8,7 +8,7 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(cors())
 
-morgan.token('body', function (request, response) { 
+morgan.token('body', function (request) {
   return JSON.stringify(request.body)
 })
 
@@ -19,13 +19,13 @@ app.get('/', (request, response) => {
 })
 
 app.get('/info', (request, response) => {
-    let date = new Date().toUTCString()
+  let date = new Date().toUTCString()
 
-    Person.find({}).then(persons => {
-      response.send(`Phonebook has infor for ${persons.length} people</br> \
+  Person.find({}).then(persons => {
+    response.send(`Phonebook has infor for ${persons.length} people</br> \
           and the time is ${date}`)
-    })
-      
+  })
+
 })
 
 app.get('/api/persons', (request, response) => {
@@ -48,23 +48,23 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
+  const body = request.body
 
-    const person = new Person({
-        name: body.name,
-        number: body.number,
-    })
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  })
 
-    person.save().then(savedPerson => {
-      response.json(savedPerson)
-    })
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
     .catch(error => next(error))
 })
 
@@ -76,7 +76,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, {runValidators: true, new: true})
+  Person.findByIdAndUpdate(request.params.id, person, { runValidators: true, new: true })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
