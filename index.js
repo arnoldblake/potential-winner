@@ -1,3 +1,4 @@
+const morgan = require('morgan')
 const express = require('express')
 const app = express()
 
@@ -25,6 +26,12 @@ let persons = [
       "number": "39-23-6423122"
     }
 ]
+
+morgan.token('body', function (request, response) { 
+  return JSON.stringify(request.body )
+})
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
@@ -67,7 +74,7 @@ const generateId = () => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
     
-    if (!body.name || !body.number) {
+    if (!body.name) {
         return response.status(400).json({
             error: 'name missing'
         })
@@ -79,15 +86,15 @@ app.post('/api/persons', (request, response) => {
         })
     }
 
-    const note = {
-        name: body.content,
-        number: body.important,
+    const person = {
+        name: body.name,
+        number: body.number,
         id: generateId(),
     }
 
-    persons = persons.concat(note)
+    persons = persons.concat(person)
 
-    response.json(note)
+    response.json(person)
 })
 
 const PORT = 3001
