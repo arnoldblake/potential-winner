@@ -1,0 +1,16 @@
+GET https://potential-winner.azurewebsites.net/api/persons
+
+###
+GET https://potential-winner.azurewebsites.net/info
+
+###
+DELETE https://potential-winner.azurewebsites.net/api/persons/1
+
+###
+POST https://potential-winner.azurewebsites.net/api/persons
+content-type: application/json
+
+{
+    "name": "sample",
+    "number": "123-456-7890"
+}
